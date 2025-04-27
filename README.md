@@ -1,4 +1,4 @@
-# On deploying ollama framework in K8s
+# On deploying Ollama framework in K8s
 
 This project is a simple attempt to deploy Ollama in a K8s cluster. In addition we are also deploying open-webui to ease how to talk to the chatbot.
 
