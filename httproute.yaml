@@ -1,0 +1,26 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ollama-route
+  namespace: ollama
+  labels:
+    app: ollama
+spec:
+  hostnames:
+  - aichat.kiukairor.local
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: nginx-gateway
+    namespace: nginx-gateway
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: open-webui-service
+      port: 80
+      weight: 1
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
