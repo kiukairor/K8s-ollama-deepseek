@@ -57,5 +57,3 @@ or modify depl
     ollama run deepseek-coder:1.3b
     ````
 
-- then same story, either i need to expose this at GW level or i need to spin up a web ui pod.
-
