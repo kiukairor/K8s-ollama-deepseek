@@ -12,11 +12,18 @@ So we have:
 # Pre-reqs
 - a local K8s cluster, kustomized enabled, and with kubectl properly configured.
 - we have used 2 PVs of combined space equal to 23 Gi (respectively 20Gi for ollama and 3Gi for open-webui); ensure you have sufficient disk space on your nodes.
-- Either a gateway API properly configured; we are using nginx gateway api here. One may modify file 'ollama-route.yaml' accordingly if using another Gateway API techno.
+- Either a gateway API properly configured; we are using nginx gateway api here. One may modify file 'httproute.yaml' accordingly if using another Gateway API techno.
 - Or simply, the capability to access openweb-ui workload via a NodePort.
 - if using the Gateway API, we assume your clients are able to resolve to the hostname you would have given in the httproute.
 
 # HOWTO
+As mentioned below, most of the env variables are hardcoded at the moment, modify the files accordingly if needed.
+
+Create ollama namespace:
+```
+kubectl create ns ollama
+````
+
 At root folder, run:
 ```` 
 kubectl apply -k .
@@ -26,34 +33,12 @@ After a few min, either browser to your workload hostname via the gateway:
 https://<http-route-hostname>:<k8s-gateway-api-port>
 ````
 
-Or if you chose the NodePort method (over http in this project):
+Or if you chose the NodePort method (see openvwebui-svc.yaml for more details):
 ```` 
 http://<worker-IP>:<NodePort>
 ````
 
 
-# Old Notes to clean
-
-- deploy ollama pvc
-- deploy ollama deployment
-- open a shell on ollama deployment and download deepseel light model 
-````
-kubectl exec -it <ollama-pod> -- ollama pull deepseek-r1:1.5b-Q4_K_M
-````
-or modify depl
-    spec:
-      initContainers:
-      - name: model-loader
-        image: docker.io/ollama/ollama:latest
-        command: ["sh", "-c", "ollama pull deepseek-r1:1.5b-Q4_K_M"]
-        volumeMounts:
-        - name: ollama-data
-          mountPath: /root/.ollama
-
-- in the ollama bash 
-    run 
-    ````
-    ollama pull deepseek-coder:1.3b
-    ollama run deepseek-coder:1.3b
-    ````
-
+# Note - Next steps.
+- Kustomize is not really needed for now as everything is hardcoded.
+- Parametrize the config.

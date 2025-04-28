@@ -1,11 +1,8 @@
-# ollama-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ollama
   namespace: ollama
-  labels:
-    app: ollama
 spec:
   replicas: 1
   selector:
@@ -16,28 +13,25 @@ spec:
       labels:
         app: ollama
     spec:
-      containers:
-      - name: ollama
-        image: docker.io/ollama/ollama:latest
-        ports:
-        - containerPort: 11434
-        volumeMounts:
-        - name: ollama-data
-          mountPath: /root/.ollama
       volumes:
-      - name: ollama-data
-        persistentVolumeClaim:
-          claimName: ollama-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ollama-service
-  namespace: ollama
-spec:
-  selector:
-    app: ollama
-  ports:
-    - protocol: TCP
-      port: 11434
-      targetPort: 11434
+        - name: shared-volume
+          persistentVolumeClaim:
+            claimName: ollama-pvc   
+      containers:
+        - name: ollama-pull
+          image: docker.io/ollama/ollama:latest     
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              ollama serve &
+              sleep 5       
+              if [ ! -f /root/.ollama/models/manifests/registry.ollama.ai/library/deepseek-coder/1.3b ]; then
+                echo "Model not found, pulling..."
+                ollama pull deepseek-coder:1.3b 
+              fi
+              ollama run deepseek-coder:1.3b
+              sleep infinity   
+          volumeMounts:
+            - name: shared-volume
+              mountPath: /root/.ollama
+
