@@ -4,7 +4,7 @@ This project is a simple attempt to deploy Ollama in a K8s cluster. In addition 
 
 So we have:
 - **Ollama** platform deployed (ollama-dep.yaml) to run an LLM
-  - the pods in this workload leverage an init container that will configure ollama to use deepseek-coder:1.3b LLM.
+  - the ollama pod will pull deepseek-coder:1.3b LLM if it was never pulled and stored onto the volume which consists in a hostpath pvc.
   - this choice was made for resources reasons as deepseek-coder:1.3b is one of the lighter LLM around.
 - **Open-webui** is an interface that allows to interact with ollama deployment instead of using a terminal to talk to the AI chat.
 - Open-webui shall be accessed by a K8s Gateway API; but we have also commented a service that would expose open-webui as a NodePort (Refer to details in openwebui-svc.yaml)
