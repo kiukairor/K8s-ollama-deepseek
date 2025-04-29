@@ -5,6 +5,7 @@ namespace: ollama
 
 resources:
 - ollama-dep.yaml 
+- ollama-svc.yaml
 - ollama-pvc.yaml
 - openwebui-dep.yaml
 - openwebui-pvc.yaml
