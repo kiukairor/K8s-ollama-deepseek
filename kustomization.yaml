@@ -11,4 +11,3 @@ resources:
 - openwebui-pvc.yaml
 - openwebui-svc.yaml
 - httproute.yaml
-
